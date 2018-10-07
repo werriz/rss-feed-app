@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <title>Rss Feeds</title>
+</head>
+<body>
+<div class="panel panel-default" style="margin: 25px 25px">
+    <div class="panel-heading"><h2>XML RSS Feed</h2></div>
+    <div class="panel-body">
+        <div>
+            <a class="btn btn-default" role="button" th:href="@{'/addFeed'}" >Add new Rss feed</a>
+        </div>
+
+        <div style="margin-top: 20px;" th:if="${not #lists.isEmpty(feeds)}">
+            <h4><i>Please find the list of all available feeds</i></h4>
+            <ul class="list-group" th:each="feed : ${feeds}">
+                <li class="list-group-item">
+                    <a th:href="@{/viewFeed(id=${feed.id})}"><span th:text="${feed.feedName}"></span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

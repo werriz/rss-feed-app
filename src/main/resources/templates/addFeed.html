@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+</head>
+<body>
+
+<div class="panel panel-default" style="margin: 25px 25px">
+    <div class="panel-heading">
+        <h2>
+            <span>Add RSS XML feed</span>
+        </h2>
+    </div>
+    <div class="starter-template" style="margin: 25px 25px">
+        <h4>
+            <span><i>Please provide new XML RSS Feed information</i></span>
+        </h4>
+        <form class="form-horizontal" action="#" th:action="@{/addFeed}" th:object="${rssFeed}" method="post">
+            <div class="form-group" th:classappend="${#fields.hasErrors('url')} ? 'has-error has-feedback' : no-error">
+                <label for="inputRssURL1" class="col-sm-2 control-label">XML RSS Feed URL: </label>
+                <div class="col-sm-10">
+                    <input id="inputRssURL1" class="form-control" type="text" th:field="*{url}" placeholder="URL"/>
+                    <span th:if="${#fields.hasErrors('url')}" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <span th:if="${#fields.hasErrors('url')}" th:errors="*{url}" class="text-danger">URL Error</span>
+                </div>
+            </div>
+            <div class="form-group" th:classappend="${#fields.hasErrors('feedName')} ? 'has-error has-feedback' : no-error">
+                <label for="inputRssName1" class="col-sm-2 control-label">XML RSS Feed name: </label>
+                <div class="col-sm-10">
+                    <input id="inputRssName1" class="form-control" type="text" th:field="*{feedName}" placeholder="Name"/>
+                    <span th:if="${#fields.hasErrors('feedName')}" class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                    <span th:if="${#fields.hasErrors('feedName')}" th:errors="*{feedName}" class="text-danger">Name Error</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-default">Add Feed</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

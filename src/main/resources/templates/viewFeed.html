@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css"
+          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" th:href="@{/css/main.css}"
+          href="../../css/main.css" />
+    <title>Rss Feeds</title>
+</head>
+<body>
+    <div class="panel panel-default" style="margin: 25px 25px">
+        <div class="panel-heading"><h2 th:text="${feed.feedName}"/></div>
+        <div class="panel-body">
+            <div class="list-grouo">
+                <div class="list-group-item">
+                    <div style="width: 100px; float:left;">Name: </div><span th:text="${feed.feedName}"/>
+                </div>
+                <div class="list-group-item">
+                    <div style="width: 100px; float:left;">URL: </div>
+                    <a href="#" th:href="${feed.url}" th:text="${feed.url}"/>
+                </div>
+                <div class="list-group-item">
+                    <div style="width: 100px; float:left;">Last updated: </div>
+                    <span th:text="${#dates.format(feed.lastUpdate, 'dd-MMM-yyyy HH:mm')}"/>
+                </div>
+                <div class="list-group-item">
+                    <div style="width: 100px; float:left;">Article Count: </div>
+                    <span th:text="${#lists.size(feed.items)}"/>
+                </div>
+                <div class="list-group-item">
+                    <div>
+                        <table>
+                            <tr th:each="item, iStat : ${feed.items}" th:unless="${iStat.index > 4}">
+                                <td style="padding-top:10px;">
+                                    <h4 class="list-group-item-heading" th:text="${item.title}"/>
+                                    <a href="#" th:href="${item.link}" th:text="${item.link}" class="list-group-item-text"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
