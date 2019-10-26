@@ -3,21 +3,24 @@ package com.jurijz.rssfeed;
 import com.jurijz.rssfeed.client.RssFeedViewController;
 import com.jurijz.rssfeed.domain.RssFeed;
 import com.jurijz.rssfeed.service.RssFeedRepository;
-import com.jurijz.rssfeed.service.RssFeedRepositoryImpl;
 import com.jurijz.rssfeed.service.RssFeedService;
 import com.jurijz.rssfeed.service.RssFeedServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.mockito.MockitoAnnotations;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Optional;
 
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 
 /**
@@ -25,8 +28,10 @@ import static org.mockito.Mockito.never;
  */
 public class RssFeedTest {
 
+    @InjectMocks
     private RssFeedViewController controller;
-    private HibernateTemplate hibernateTemplate;
+    @Mock
+    private RssFeedRepository repository;
     private RssFeed rssFeed;
     private BindingResult bindingResult;
 
@@ -34,11 +39,11 @@ public class RssFeedTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
         rssFeed = new RssFeed();
         bindingResult = new MapBindingResult(new HashMap<>(), "rssFeed");
 
-        hibernateTemplate = Mockito.mock(HibernateTemplate.class);
-        RssFeedRepository repository = new RssFeedRepositoryImpl(hibernateTemplate);
         RssFeedService service = new RssFeedServiceImpl(repository);
         controller = new RssFeedViewController(service);
     }
@@ -52,10 +57,10 @@ public class RssFeedTest {
 
         Assert.assertTrue("Controllers method rssFeedSubmit should return 'redirect:/'" ,
                 !result.isEmpty() && result.equals("redirect:/"));
-        Assert.assertTrue("RssFeed title should be filled",
-                !rssFeed.getTitle().isEmpty());
+        Assert.assertFalse("RssFeed title should be filled",
+                rssFeed.getTitle().isEmpty());
 
-        Mockito.verify(hibernateTemplate).saveOrUpdate(rssFeed);
+        Mockito.verify(repository).save(rssFeed);
     }
 
     @Test
@@ -70,12 +75,12 @@ public class RssFeedTest {
         Assert.assertTrue("Binding result should have errors",
                 bindingResult.hasErrors());
 
-        Mockito.verify(hibernateTemplate, never()).saveOrUpdate(rssFeed);
+        Mockito.verify(repository, never()).save(rssFeed);
     }
 
     @Test
     public void viewRssFeeds() {
-        Mockito.when(hibernateTemplate.loadAll(RssFeed.class))
+        Mockito.when(repository.findAll())
                 .thenReturn(Collections.singletonList(rssFeed));
         String result = controller.viewFeeds(new ExtendedModelMap());
 
@@ -83,21 +88,21 @@ public class RssFeedTest {
                 !result.isEmpty() && result.equals("viewFeeds"));
 
 
-        Mockito.verify(hibernateTemplate).loadAll(RssFeed.class);
+        Mockito.verify(repository, atLeastOnce()).findAll();
         Mockito.validateMockitoUsage();
     }
 
     @Test
     public void viewSingleRssFeed() {
         rssFeed.setId(1);
-        Mockito.when(hibernateTemplate.load(RssFeed.class, 1))
-                .thenReturn(rssFeed);
+        Mockito.when(repository.findById(1))
+                .thenReturn(Optional.of(rssFeed));
         String result = controller.viewFeed("1", new ExtendedModelMap());
 
         Assert.assertTrue("Controller should return 'viewFeed'",
                 !result.isEmpty() && result.equals("viewFeed"));
 
-        Mockito.verify(hibernateTemplate).load(RssFeed.class,1);
+        Mockito.verify(repository).findById(1);
         Mockito.validateMockitoUsage();
     }
 }

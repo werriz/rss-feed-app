@@ -1,17 +1,10 @@
 package com.jurijz.rssfeed.service;
 
 import com.jurijz.rssfeed.domain.RssFeed;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface RssFeedRepository extends JpaRepository<RssFeed, Integer> {
 
-/**
- * Created by jurijz on 10/6/2018.
- */
-public interface RssFeedRepository {
-
-    List<RssFeed> loadAll();
-
-    RssFeed load(Integer id);
-
-    void save(RssFeed rssFeed);
 }

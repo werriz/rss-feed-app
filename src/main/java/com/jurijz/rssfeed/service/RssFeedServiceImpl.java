@@ -33,12 +33,12 @@ public class RssFeedServiceImpl implements RssFeedService {
     @Transactional
     @Override
     public List<RssFeed> loadRssFeeds() {
-        return rssFeedRepository.loadAll();
+        return rssFeedRepository.findAll();
     }
 
     @Override
     public RssFeed loadRssFeeds(Integer id) {
-        return rssFeedRepository.load(id);
+        return rssFeedRepository.findById(id).orElseThrow(() -> new RuntimeException("Cannot load RssFeed by id: " + id));
     }
 
     @Transactional
@@ -50,10 +50,10 @@ public class RssFeedServiceImpl implements RssFeedService {
     }
 
     /**
-     * This method uses Rome Tools to download and parse xml from providen url
-     * @param rssFeed
-     * @throws IOException
-     * @throws FeedException
+     * This method uses Rome Tools to download and parse xml from provided url
+     * @param rssFeed item
+     * @throws IOException thrown if URL is bad
+     * @throws FeedException thrown if something wrong when parsing xml
      */
     private void updateRssFeed(RssFeed rssFeed) throws IOException, FeedException {
         SyndFeedInput input = new SyndFeedInput();
@@ -67,8 +67,8 @@ public class RssFeedServiceImpl implements RssFeedService {
 
     /**
      * This method transforms RomeTools entry object to RssItem object
-     * @param entry
-     * @param rssFeed
+     * @param entry item from RomeTools
+     * @param rssFeed object from repository
      * @return RssItem
      */
     private RssItem transformToItem(final SyndEntry entry, final RssFeed rssFeed) {

@@ -62,7 +62,7 @@ public class RssFeedViewController {
                 rssFeedService.save(rssFeed);
             } catch (IOException | FeedException ioe) {
                 bindingResult.rejectValue("url", "error.user",
-                        "Providen URL is not valid.");
+                        "Provided URL is not valid.");
                 return "addFeed";
             }
             return "redirect:/";
